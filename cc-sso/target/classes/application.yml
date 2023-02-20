@@ -1,0 +1,45 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: cc-sso
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3308/comrade_crony
+    username: root
+    password: example
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  redis:
+    url: redis://127.0.0.1:6381
+    #    port:
+    jedis:
+      pool:
+        max-wait: 5000ms
+        max-idle: 100
+        min-idle: 10
+    timeout: 10s
+#    cluster:
+#      nodes:
+#        - 127.0.0.1:6381
+#        - 127.0.0.1:6382
+#        - 127.0.0.1:6383
+#      max-redirects: 5
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: comrade_crony
+    send-message-timeout: 10000
+
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_
+      id-type: auto
+  type-enums-package: com.comrade.crony.sso.enums
+
+jwt:
+  secret: 3b895a493b52f0bd7880fcec1f87fae7
+
