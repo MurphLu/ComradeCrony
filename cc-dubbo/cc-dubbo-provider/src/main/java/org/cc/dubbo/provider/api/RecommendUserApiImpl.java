@@ -32,7 +32,7 @@ public class RecommendUserApiImpl implements RecommendUserApi {
         Criteria criteria = Criteria.where("toUserId").is(userId);
         Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNum - 1);
         Query query = Query.query(criteria).with(pageable);
-        List<RecommendUser> recommendUsers = mongoTemplate.find(null, RecommendUser.class);
+        List<RecommendUser> recommendUsers = mongoTemplate.find(query, RecommendUser.class);
         return new PageInfo<>(null, pageNum, pageSize, recommendUsers);
     }
 

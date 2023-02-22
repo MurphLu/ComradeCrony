@@ -27,7 +27,8 @@ public class SmsServiceImpl implements SmsService {
         Map<String, Object> result = new HashMap<>();
 
         if(StringUtils.isEmpty(value)) {
-            int smsCode = RandomUtils.nextInt(100000, 999999);
+//            int smsCode = RandomUtils.nextInt(100000, 999999);
+            int smsCode = 123456;
             // 调用短信服务发送短信
             result.put("code", 0);
             result.put("data", smsCode);

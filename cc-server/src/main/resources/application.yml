@@ -10,7 +10,15 @@ spring:
     username: root
     password: example
     type: com.alibaba.druid.pool.DruidDataSource
-
+  redis:
+    url: redis://127.0.0.1:6381
+    #    port:
+    jedis:
+      pool:
+        max-wait: 5000ms
+        max-idle: 100
+        min-idle: 10
+    timeout: 10s
 dubbo:
   application:
     name: cc-server
@@ -30,6 +38,8 @@ mybatis-plus:
   type-enums-package: org.cc.server.enums
 
 cc:
+  cache:
+    enable: true
   sso:
     url: http://127.0.0.1:18082
     default:
