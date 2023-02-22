@@ -2,10 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/cc-dubbo/cc-dubbo-interface/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/cc-dubbo/cc-dubbo-producer/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/cc-dubbo/cc-dubbo-provicer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cc-dubbo/cc-dubbo-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cc-dubbo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cc-dubbo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cc-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cc-sso/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />

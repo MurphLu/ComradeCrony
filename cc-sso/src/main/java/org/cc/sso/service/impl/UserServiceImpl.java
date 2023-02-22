@@ -92,11 +92,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if(StringUtils.isEmpty(userValue)) {
                 return null;
             }
+            redisTemplate.opsForValue().set(redisTokenKey, userValue, Duration.ofHours(1));
             return MAPPER.readValue(userValue, User.class);
         }catch (Exception e) {
             LOGGER.error("get cached use error: ", e);
             return null;
         }
-
     }
 }

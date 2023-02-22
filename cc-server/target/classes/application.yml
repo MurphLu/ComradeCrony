@@ -1,0 +1,36 @@
+server:
+  port: 18081
+
+spring:
+  application:
+    name: cc-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3308/comrade_crony
+    username: root
+    password: example
+    type: com.alibaba.druid.pool.DruidDataSource
+
+dubbo:
+  application:
+    name: cc-server
+    logger: slf4j
+    qos-enable: false
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: zookeeper://${zookeeper.address:127.0.0.1}:2181
+
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_
+      id-type: auto
+  type-enums-package: org.cc.server.enums
+
+cc:
+  sso:
+    url: http://127.0.0.1:18082
+    default:
+      user: 2

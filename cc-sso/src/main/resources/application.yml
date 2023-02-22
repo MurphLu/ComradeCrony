@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 18082
 
 spring:
   application:
@@ -38,7 +38,7 @@ mybatis-plus:
     db-config:
       table-prefix: tb_
       id-type: auto
-  type-enums-package: com.comrade.crony.sso.enums
+  type-enums-package: org.cc.sso.enums
 
 jwt:
   secret: 3b895a493b52f0bd7880fcec1f87fae7
