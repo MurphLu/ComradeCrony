@@ -1,0 +1,47 @@
+services:
+  redis-n1:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6381:6381
+    volumes:
+      - /tmp/redis/redis-n1:/data
+    command: ['redis-server', '--cluster-enabled no', '--port 6381']
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+  zoo:
+    image: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+  rmq-server:
+    image: apache/rocketmq:4.5.0
+    ports:
+      - 9876:9876
+    volumes:
+      - /tmp/rmq/server/logs:/home/rocketmq/logs
+    command: sh mqnamesrv
+  rmq-broker:
+    image: apache/rocketmq:4.5.0
+    ports:
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
+    volumes:
+      - /tmp/rmq/broker/logs:/home/rocketmq/logs
+      - /tmp/rmq/broker/store:/home/rocketmq/store
+      - /tmp/rmq/broker/conf/broker.conf:/home/rocketmq/rocketmq-4.5.0/conf/broker.conf
+    command: sh mqbroker -n rmq-server:9876 -c ../conf/broker.conf
+    depends_on:
+      - rmq-server
+  rmq-console:
+    image: apacherocketmq/rocketmq-dashboard
+    ports:
+      - 18000:8080
