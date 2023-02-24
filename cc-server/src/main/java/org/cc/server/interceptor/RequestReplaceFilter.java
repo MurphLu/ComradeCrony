@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * 替换Request对象
  */
-@Component
+//@Component
 public class RequestReplaceFilter extends OncePerRequestFilter {
 
     @Override

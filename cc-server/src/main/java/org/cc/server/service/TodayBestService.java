@@ -6,16 +6,15 @@ import org.cc.dubbo.pojo.RecommendUser;
 import org.cc.dubbo.vo.PageInfo;
 import org.cc.server.pojo.User;
 import org.cc.server.pojo.UserInfo;
+import org.cc.server.utils.UserThreadLocal;
 import org.cc.server.vo.PageResult;
 import org.cc.server.vo.RecommendUserQueryParam;
 import org.cc.server.vo.TodayBest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,8 +30,8 @@ public class TodayBestService {
     @Autowired
     UserInfoService userInfoService;
 
-    public TodayBest queryTodayBest(String token){
-        User user = userService.getUserByToken(token);
+    public TodayBest queryTodayBest(){
+        User user = UserThreadLocal.get();
         log.info("get userinfo: {}", user);
         TodayBest todayBest = recommendUserService.queryTodayBest(user.getId());
         log.info("get todayBest success: {}", todayBest);
@@ -48,11 +47,8 @@ public class TodayBestService {
         return todayBest;
     }
 
-    public PageResult queryRecommendPageInfo(String token, RecommendUserQueryParam param) {
-        User user = this.userService.getUserByToken(token);
-        if(user == null) {
-            return null;
-        }
+    public PageResult queryRecommendPageInfo(RecommendUserQueryParam param) {
+        User user = UserThreadLocal.get();
         PageInfo<RecommendUser> userPageInfo = recommendUserService
                 .queryRecommendPageInfo(user.getId(), param);
         List<RecommendUser> userList = userPageInfo.getRecords();

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.cc.dubbo.util.CONSTS;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,7 +14,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "recommend_user")
+@Document(collection = CONSTS.MONGODB_RECOMMEND_USER)
 public class RecommendUser implements Serializable {
 
     private static final long serialVersionUID = -4296017160071130962L;

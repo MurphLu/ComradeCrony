@@ -17,12 +17,12 @@ public class TodayBestController {
     TodayBestService service;
 
     @GetMapping("todayBest")
-    public TodayBest queryTodayBest(@RequestHeader("Authorization") String token) {
-        return service.queryTodayBest(token);
+    public TodayBest queryTodayBest() {
+        return service.queryTodayBest();
     }
 
     @GetMapping("recommendList")
-    public PageResult queryRecommendList(@RequestHeader("Authorization") String token, RecommendUserQueryParam param) {
-        return service.queryRecommendPageInfo(token, param);
+    public PageResult queryRecommendList(RecommendUserQueryParam param) {
+        return service.queryRecommendPageInfo(param);
     }
 }
