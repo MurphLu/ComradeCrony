@@ -9,13 +9,20 @@ import org.cc.dubbo.pojo.Publish;
 import org.cc.dubbo.pojo.Timeline;
 import org.cc.dubbo.pojo.Users;
 import org.cc.dubbo.util.CONSTS;
+import org.cc.dubbo.vo.PageInfo;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @DubboService
@@ -65,5 +72,28 @@ public class FeedApiImpl implements FeedApi {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public PageInfo<Publish> queryPublishList(Long userId, Integer page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("date").descending());
+        Query query = new Query().with(pageable);
+        List<Timeline> timelines = mongoTemplate.find(query, Timeline.class, CONSTS.MONGODB_FEED_TIMELINE + "_" + userId);
+        log.info("==========> timelines: {}", timelines);
+        Criteria publishCriteria = Criteria
+                .where("id")
+                .in(timelines
+                        .stream()
+                        .map(Timeline::getPublishId).collect(Collectors.toList()));
+
+        Query publishQuery = Query
+                .query(publishCriteria)
+                .with(Sort
+                        .by("created")
+                        .descending()
+                );
+
+        List<Publish> publishes = mongoTemplate.find(publishQuery, Publish.class);
+        return new PageInfo<>(null, page, pageSize, publishes);
     }
 }
