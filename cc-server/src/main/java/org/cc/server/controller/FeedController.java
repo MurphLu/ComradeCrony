@@ -1,6 +1,7 @@
 package org.cc.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cc.dubbo.pojo.Comment;
 import org.cc.dubbo.vo.PageInfo;
 import org.cc.server.pojo.Feed;
 import org.cc.server.pojo.TimelineFeed;
@@ -19,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RequestMapping("feed")
+@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
+@RequestMapping("feed")
 public class FeedController {
-
     @Autowired
     FeedService feedService;
 
@@ -58,5 +59,29 @@ public class FeedController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @PostMapping("comment")
+    public ResponseEntity<Void> addComment(@RequestBody Comment comment) {
+        try {
+            feedService.addComment(comment);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("add comment error {}", e.toString());
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping("comment/cont")
+    public ResponseEntity<Void> getCommentCount(@RequestBody Comment comment) {
+        try {
+            feedService.getCommentCount(comment);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("add comment error {}", e.toString());
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

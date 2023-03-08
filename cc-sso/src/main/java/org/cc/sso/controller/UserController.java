@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RequestMapping("user")
+@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
+@RequestMapping("user")
 public class UserController {
     
     @Autowired

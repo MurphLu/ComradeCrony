@@ -4,7 +4,10 @@ import com.alibaba.fastjson2.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.bson.types.ObjectId;
 import org.cc.dubbo.api.FeedApi;
+import org.cc.dubbo.enums.CommentType;
+import org.cc.dubbo.pojo.Comment;
 import org.cc.dubbo.pojo.Publish;
 import org.cc.dubbo.vo.PageInfo;
 import org.cc.server.pojo.Feed;
@@ -94,5 +97,34 @@ public class FeedService {
         }).collect(Collectors.toList());
         List<TimelineFeed> records = timelineFeeds.stream().filter(Objects::nonNull).collect(Collectors.toList());
         return new PageResult(null, pageSize, null, page, records);
+    }
+
+    public boolean addComment(Comment comment) {
+        User user = UserThreadLocal.get();
+        CommentType commentType = CommentType.withValue(comment.getCommentType());
+        if(commentType==null) {
+            return false;
+        }
+        try {
+            switch (commentType) {
+                case LIKE:
+                    feedApi.saveLikeComment(user.getId(), comment.getPublishId().toString());
+                    return true;
+                case COMMENT:
+                    feedApi.saveComment(user.getId(), comment.getPublishId().toString(), comment.getContent());
+                    return true;
+                case FAVORITE:
+                    feedApi.saveLoveComment(user.getId(), comment.getPublishId().toString());
+                    return true;
+            }
+        } catch (Exception e) {
+            log.error("save comment error: {}", e.toString());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Long getCommentCount(Comment comment) {
+        return feedApi.queryCommentCount(comment.getPublishId().toString(), CommentType.withValue(comment.getCommentType()));
     }
 }

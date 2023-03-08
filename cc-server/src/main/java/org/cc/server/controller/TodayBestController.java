@@ -9,9 +9,10 @@ import org.cc.server.vo.TodayBest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 @RequestMapping("cc")
-public class TodayBestController {
+public class TodayBestController{
 
     @Autowired
     TodayBestService service;

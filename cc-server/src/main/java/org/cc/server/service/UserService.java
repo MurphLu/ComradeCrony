@@ -25,6 +25,9 @@ public class UserService {
         User user = null;
         try {
             String userStr = this.restTemplate.getForObject(url + "/user/" + token, String.class);
+            if(userStr == null) {
+                return null;
+            }
             user = MAPPER.readValue(userStr, User.class);
         } catch (JsonProcessingException e) {
             log.info("get login user error: {}", e.toString());

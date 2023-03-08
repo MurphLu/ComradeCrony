@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.bson.types.ObjectId;
 import org.cc.dubbo.api.FeedApi;
-import org.cc.dubbo.pojo.Album;
-import org.cc.dubbo.pojo.Publish;
-import org.cc.dubbo.pojo.Timeline;
-import org.cc.dubbo.pojo.Users;
+import org.cc.dubbo.enums.CommentType;
+import org.cc.dubbo.pojo.*;
 import org.cc.dubbo.util.CONSTS;
 import org.cc.dubbo.vo.PageInfo;
 import org.checkerframework.checker.units.qual.C;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
 
@@ -95,5 +92,90 @@ public class FeedApiImpl implements FeedApi {
 
         List<Publish> publishes = mongoTemplate.find(publishQuery, Publish.class);
         return new PageInfo<>(null, page, pageSize, publishes);
+    }
+
+    @Override
+    public boolean saveComment(Long userId, String publishId, String commentContent) {
+        return this.saveComment(userId, publishId, CommentType.COMMENT, commentContent);
+    }
+
+    @Override
+    public boolean removeComment(Long userId, Long commentId) {
+        try {
+            Criteria criteria = Criteria.where("userId").is(userId).and("id").is(commentId);
+            this.queryAndRemoveComment(criteria);
+        } catch (Exception e) {
+            log.error("remove comment error: {}", e.toString());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeNonTextComment(Long userId, String publishId, CommentType commentType) {
+        try {
+            Criteria criteria = Criteria
+                    .where("userId").is(userId)
+                    .and("publishId").is(publishId)
+                    .and("commentType").is(commentType.getValue());
+            this.queryAndRemoveComment(criteria);
+        } catch (Exception e) {
+            log.error("remove comment error: {}", e.toString());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean saveLikeComment(Long userId, String publishId) {
+        return this.saveComment(userId, publishId, CommentType.LIKE, null);
+    }
+
+    @Override
+    public boolean saveLoveComment(Long userId, String publishId) {
+        return this.saveComment(userId, publishId, CommentType.FAVORITE, null);
+    }
+
+    @Override
+    public Long queryCommentCount(String publishId, CommentType type) {
+        long count = 0;
+        try {
+            Criteria criteria = Criteria
+                    .where("publishId").is(publishId)
+                    .and("commentType").is(type.getValue());
+            Query query = Query.query(criteria);
+            count = mongoTemplate.count(query, Comment.class);
+        } catch (Exception e) {
+            log.error("get comment count error: {} type:{}", e, type.getDesc());
+        }
+        return count;
+    }
+
+    private void queryAndRemoveComment(Criteria criteria) {
+        Query query = Query.query(criteria);
+        Comment comment = this.mongoTemplate.findOne(query, Comment.class);
+        if (comment!=null) {
+            this.mongoTemplate.remove(comment);
+        }
+    }
+
+    private boolean saveComment(Long userId, String publishId, CommentType type, String content) {
+        try {
+            Comment comment = new Comment();
+            comment.setId(ObjectId.get());
+            comment.setPublishId(new ObjectId(publishId));
+            comment.setCommentType(type.getValue());
+            comment.setContent(content);
+            comment.setCreated(System.currentTimeMillis());
+            comment.setUserId(userId);
+            this.mongoTemplate.save(comment);
+            return true;
+        } catch (Exception e) {
+            log.error("save comment error: {}, commentType: {}", e, type.getDesc());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

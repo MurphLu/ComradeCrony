@@ -21,7 +21,7 @@ public class Comment implements java.io.Serializable{
     private ObjectId id;
 
     private ObjectId publishId; //发布id
-    private Integer commentType; //评论类型，1-点赞，2-评论，3-喜欢
+    private Integer commentType; //评论类型，1-评论，2-点赞，3-收藏
     private String content; //评论内容
     private Long userId; //评论人
     private Long publishUserId; //发布人的用户id
