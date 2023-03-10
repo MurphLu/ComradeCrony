@@ -25,7 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(corsInterceptor).addPathPatterns("/**");
         registry.addInterceptor(tokenInterceptor).addPathPatterns("/**");
-        registry.addInterceptor(redisCacheInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(redisCacheInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/feed/comment/cont");
     }
 
     //

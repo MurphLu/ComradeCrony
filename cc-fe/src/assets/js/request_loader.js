@@ -1,37 +1,79 @@
 import { callApi } from "./network_service";
 
+const API = {
+  async post({url, data}) {
+    return await callApi({
+      url, method: "POST", data
+    })
+  },
+  async get({url, params}) {
+    return await callApi({
+      url, method: "GET", params
+    })
+  },
+  async delete({url, data}) {
+    return await callApi({
+      url, method: "delete", data
+    })
+  },
+
+}
+
 const RecommendLoader = {
   async loadTodayBest() {
-    const result = await callApi({
-      url: "/cc/todayBest",
-      method: "get"
-    })
-    return result
+    return await API.get({url: "/cc/todayBest"})
   },
   async loadRecommendList(page, pageSize) {
-    const result = await callApi({
+    return await API.get({
       url: "/cc/recommendList",
-      method: "get",
       params: {
         page: page,
         pagesize: pageSize
       }
-    })
-    return result
+  })
   }
 }
 
 const TimelineLoader = {
   async loadTimeline(page, pageSize) {
-    const result = await callApi({
+    return await API.get({
       url: "/feed",
-      method: "get",
       params: {
         page: page,
         pageSize: pageSize
+      }})
+  },
+  async addComment(type, publishId, publishUserId, comment) {
+    return await API.post({
+      url: "/feed/comment",
+      method: "post",
+      data: {
+        commentType: type,
+        publishId: publishId,
+        publishUserId: publishUserId,
+        content: comment
       }
     })
-    return result
+  },
+  async removeComment(type, publishId, publishUserId, commentId) {
+    return await API.delete({
+      url: "/feed/comment",
+      data: {
+        commentType: type,
+        publishId: publishId,
+        publishUserId: publishUserId,
+        commentId: commentId
+      }
+    })
+  },
+  async getCommentCount(type, publishId) {
+    return await API.get({
+      url: "/feed/comment/cont",
+      params: {
+        commentType: type,
+        publishId: publishId,
+      }
+    })
   }
 }
 

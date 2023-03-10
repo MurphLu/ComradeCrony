@@ -50,6 +50,7 @@ service.interceptors.response.use(
   function (error) {
     Indicator.close()
     const res = error.response
+    console.log(error)
     if(res.status===401) {
       store.commit('tokenChanged', '')
       router.push({path:'/login'})

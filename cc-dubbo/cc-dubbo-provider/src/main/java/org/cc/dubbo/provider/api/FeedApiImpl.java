@@ -143,7 +143,7 @@ public class FeedApiImpl implements FeedApi {
         long count = 0;
         try {
             Criteria criteria = Criteria
-                    .where("publishId").is(publishId)
+                    .where("publishId").is(new ObjectId(publishId))
                     .and("commentType").is(type.getValue());
             Query query = Query.query(criteria);
             count = mongoTemplate.count(query, Comment.class);

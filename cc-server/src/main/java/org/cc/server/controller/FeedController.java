@@ -1,6 +1,7 @@
 package org.cc.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.cc.dubbo.pojo.Comment;
 import org.cc.dubbo.vo.PageInfo;
 import org.cc.server.pojo.Feed;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 @RequestMapping("feed")
 public class FeedController {
@@ -74,10 +74,13 @@ public class FeedController {
     }
 
     @GetMapping("comment/cont")
-    public ResponseEntity<Void> getCommentCount(@RequestBody Comment comment) {
+    public ResponseEntity<Long> getCommentCount(int commentType, String publishId) {
         try {
-            feedService.getCommentCount(comment);
-            return ResponseEntity.ok().build();
+            Comment comment = new Comment();
+            comment.setCommentType(commentType);
+            comment.setPublishId(new ObjectId(publishId));
+            Long commentCount = feedService.getCommentCount(comment);
+            return ResponseEntity.ok().body(commentCount);
         } catch (Exception e) {
             log.error("add comment error {}", e.toString());
             e.printStackTrace();
